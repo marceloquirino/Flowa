@@ -1,0 +1,10 @@
+<Solution>
+  <Folder Name="/FrontEnd/">
+    <Project Path="OrderGenerator.Web/OrderGenerator.Web.csproj" />
+  </Folder>
+  <Folder Name="/Gateway/" />
+  <Folder Name="/Services/">
+    <Project Path="OrderAccumulator/OrderAccumulator.csproj" />
+    <Project Path="OrderGenerator.Api/OrderGenerator.Api.csproj" />
+  </Folder>
+</Solution>
