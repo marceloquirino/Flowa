@@ -1,6 +1,8 @@
 # Build results
 bin/
 obj/
+logs/
+store/
 
 # Visual Studio
 .vs/

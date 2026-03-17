@@ -1,17 +1,21 @@
+using OrderAccumulator.Fix.IFix;
+
 namespace OrderAccumulator
 {
-    public class Worker(ILogger<Worker> logger) : BackgroundService
+    public class Worker(IFixServer fixServer) : BackgroundService
     {
-        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+        private readonly IFixServer _fixServer = fixServer;
+
+        protected override Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            while (!stoppingToken.IsCancellationRequested)
-            {
-                if (logger.IsEnabled(LogLevel.Information))
-                {
-                    logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
-                }
-                await Task.Delay(1000, stoppingToken);
-            }
+            _fixServer.Start();
+            return Task.CompletedTask;
+        }
+
+        public override Task StopAsync(CancellationToken cancellationToken)
+        {
+            _fixServer.Stop();
+            return base.StopAsync(cancellationToken);
         }
     }
 }
