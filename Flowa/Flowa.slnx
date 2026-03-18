@@ -1,6 +1,6 @@
 <Solution>
   <Folder Name="/FrontEnd/">
-    <Project Path="OrderGenerator.Web/OrderGenerator.Web.csproj" />
+    <Project Path="OrderGenerator.Web/OrderGenerator.Web.csproj" Id="1aeca420-37ce-4e25-966d-5de46054a2d5" />
   </Folder>
   <Folder Name="/Gateway/" />
   <Folder Name="/Services/">
