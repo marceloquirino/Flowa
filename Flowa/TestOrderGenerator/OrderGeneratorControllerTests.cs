@@ -5,12 +5,12 @@ using OrderGenerator.Api.Services.IService;
 
 namespace TestOrderGenerator
 {
-    public class OrderGeneratorControllerTest
+    public class OrderGeneratorControllerTests
     {
         private readonly IOrderGeneratorService _service;
         private readonly OrderGeneratorController _controller;
 
-        public OrderGeneratorControllerTest()
+        public OrderGeneratorControllerTests()
         {
             _service = Substitute.For<IOrderGeneratorService>();
             _controller = new OrderGeneratorController(_service);
@@ -40,7 +40,7 @@ namespace TestOrderGenerator
 
             _service
                 .When(x => x.NewOrderSingle(order))
-                .Do(x => throw new Exception("Erro teste"));
+                .Do(_ => throw new Exception("Erro teste"));
 
             // Act
             var result = await _controller.NewOrderSingle(order);

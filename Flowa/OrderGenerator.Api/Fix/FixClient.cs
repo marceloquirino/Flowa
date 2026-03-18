@@ -31,17 +31,17 @@ namespace OrderGenerator.Api.Fix
 
         public bool Send(Message message)
         {
-            bool send = false;
-            foreach (var session in _initiator.GetSessionIDs())
+            foreach (var sessionId in _initiator.GetSessionIDs())
             {
-                send = Session.SendToTarget(message, session);
-                if (!send)
-                {
-                    break;
-                }
+                var session = Session.LookupSession(sessionId);
+
+                if (session?.IsLoggedOn != true)
+                    return false;
+
+                return Session.SendToTarget(message, sessionId);
             }
 
-            return send;
+            return false;
         }
 
         public void Start()

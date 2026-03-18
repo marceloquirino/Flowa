@@ -20,7 +20,6 @@ namespace OrderGenerator.Api.Fix
                 new OrdType(OrdType.LIMIT)
             );
 
-            order.Set(new Symbol(symbol));
             order.Set(new OrderQty(quantity));
             order.Set(new Price(price));
             order.Set(new HandlInst('1'));
