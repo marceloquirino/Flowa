@@ -30,6 +30,10 @@ namespace OrderGenerator.Web.Controllers
                     TempData["error"] = response?.Message;
                 }
             }
+            else
+            {
+                TempData["error"] = "Valores inválidos";
+            }
             return View("OrderGeneratorIndex", model);
         }
     }

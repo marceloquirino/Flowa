@@ -16,26 +16,28 @@
                     <div class="col-2">
                         <label class="control-label pt-2" style="font-size:20px;">Símbolo</label>
                         <br />
-                        <select asp-for="Symbol" class="form-select" asp-items="Html.GetEnumSelectList<Symbol>()">
+                        <select asp-for="Symbol" class="form-select" required asp-items="Html.GetEnumSelectList<Symbol>()">
+                            <option value="" style="color:gray">Select</option>
                         </select>
                     </div>
 
                     <div class="col-2">
                         <label class="control-label pt-2" style="font-size:20px;">Ordem</label>
                         <br />
-                        <select asp-for="Side" class="form-select" asp-items="Html.GetEnumSelectList<Side>()">
+                        <select asp-for="Side" class="form-select" required asp-items="Html.GetEnumSelectList<Side>()">
+                            <option value="" style="color:gray">Select</option>
                         </select>
                     </div>
 
                     <div class="col-2">
                         <label class="control-label pt-2" style="font-size:20px;">Preço</label>
                         <br />
-                        <input asp-for="Price" class="form-control" type="number" step="0.01" min="0.01" max="999.99" />
+                        <input asp-for="Price" class="form-control" type="number" step="0.01" min="0.01" max="999.99" required />
                     </div>
 
                     <div class="col-2">
                         <label class="control-label pt-2" style="font-size:20px;">Quantidade</label>
-                        <input asp-for="Quantity" class="form-control" type="number" min="1" max="99999" />
+                        <input asp-for="Quantity" class="form-control" type="number" min="1" max="99999" required />
                     </div>
 
                     <div class="col-4">

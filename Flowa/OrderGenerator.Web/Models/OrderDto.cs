@@ -6,9 +6,11 @@ namespace OrderGenerator.Web.Models
     public class OrderDto
     {
         [EnumDataType(typeof(Symbol))]
-        public Symbol Symbol { get; set; }
+        [Required(ErrorMessage = "Selecione um símbolo")]
+        public Symbol? Symbol { get; set; }
 
         [EnumDataType(typeof(Side))]
+        [Required(ErrorMessage = "Selecione uma Ordem")]
         public Side Side { get; set; }
 
         [Range(1, 99999)]
