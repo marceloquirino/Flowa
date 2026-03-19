@@ -2,8 +2,9 @@
 
 namespace OrderAccumulator.Services
 {
-    public class ExposureService : IExposureService
+    public class ExposureService(ILogger<ExposureService> logger) : IExposureService
     {
+        private readonly ILogger<ExposureService> _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         private readonly Dictionary<string, decimal> _exposures = [];
 
         public void UpdateExposure(string symbol, char side, decimal price, decimal quantity)
@@ -17,7 +18,10 @@ namespace OrderAccumulator.Services
             else
                 _exposures[symbol] -= value;
 
-            Console.WriteLine($"Exposure {symbol}: {_exposures[symbol]}");
+            if (_logger.IsEnabled(LogLevel.Information))
+            {
+                _logger.LogInformation("Exposure {Symbol}: {Exposure}", symbol, _exposures[symbol]);
+            }
         }
     }
 }
