@@ -15,7 +15,7 @@ builder.Services.AddHostedService<Worker>();
 
 Log.Logger = new LoggerConfiguration()
     .WriteTo.Console()
-    .WriteTo.File("logs/log.txt")
+    .WriteTo.File("logs/log.txt", rollingInterval: RollingInterval.Day)
     .CreateLogger();
 
 builder.Logging.ClearProviders();
