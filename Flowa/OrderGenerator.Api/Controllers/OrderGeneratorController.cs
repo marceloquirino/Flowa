@@ -5,13 +5,13 @@ using OrderGenerator.Api.Services.IService;
 namespace OrderGenerator.Api.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/orderGenerator")]
     public class OrderGeneratorController(IOrderGeneratorService orderGeneratorService) : ControllerBase
     {
         private readonly IOrderGeneratorService _orderGeneratorService = orderGeneratorService;
         private readonly ResponseDto _response = new();
 
-        [HttpPost(Name = "NewOrderSingle")]
+        [HttpPost("NewOrderSingle")]
         public async Task<ResponseDto> NewOrderSingle([FromBody] OrderDto order)
         {
             try
