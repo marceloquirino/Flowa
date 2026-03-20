@@ -43,7 +43,3 @@ A solução apresenta testes unitários para o projeto OrderGenerator API
 - Alguns logs serão exibidos no terminais.
 - Alguns logs serão escritos em arquivos (todos são ignorados no .gitignore): OrderAccumulator\store e OrderGenerator\store (armazenam mensagens e sequência da sessão FIX para recuperação e controle). OrderAccumulator\logs e OrderGenerator\logs (logs das mensagens e eventos da sessão FIX). Além disso, na pasta OrderAccumulator\logs terá um log (que o nome é configurado por dia, ex: log20260320.txt) listando, principalmente as exposições. Essas arquivos estão em uso durante o processamento do sistema, então é recomendado que não sejam abertos durante a execução.
 - Se o sistema for reiniciado, as exposições também serão reiniciadas
-
-## Suporte
-
-Para tirar dúvidas sobre o processo envie uma mensagem diretamente a um especialista no chat da plataforma. 
