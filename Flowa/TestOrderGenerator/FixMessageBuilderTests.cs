@@ -16,15 +16,17 @@ namespace TestOrderGenerator
         public void BuildNewOrderSingle_ShouldCreateMessage_WithCorrectFields()
         {
             // Arrange
+            string clOrdId = Guid.NewGuid().ToString();
             const string symbol = "PETR4";
             const char side = Side.BUY;
             const decimal price = 10.5m;
             const int quantity = 100;
 
             // Act
-            var message = _builder.BuildNewOrderSingle(symbol, side, price, quantity);
+            var message = _builder.BuildNewOrderSingle(clOrdId, symbol, side, price, quantity);
 
             // Assert
+            Assert.Equal(clOrdId, message.ClOrdID.getValue());
             Assert.Equal(symbol, message.Symbol.getValue());
             Assert.Equal(side, message.Side.getValue());
             Assert.Equal(price, message.Price.getValue());
@@ -35,7 +37,7 @@ namespace TestOrderGenerator
         public void BuildNewOrderSingle_ShouldSetLimitOrderType()
         {
             // Act
-            var message = _builder.BuildNewOrderSingle("VALE3", Side.SELL, 50m, 200);
+            var message = _builder.BuildNewOrderSingle(Guid.NewGuid().ToString(), "VALE3", Side.SELL, 50m, 200);
 
             // Assert
             Assert.Equal(OrdType.LIMIT, message.OrdType.getValue());
@@ -45,7 +47,7 @@ namespace TestOrderGenerator
         public void BuildNewOrderSingle_ShouldGenerateClOrdID()
         {
             // Act
-            var message = _builder.BuildNewOrderSingle("VIIA4", Side.BUY, 5m, 10);
+            var message = _builder.BuildNewOrderSingle(Guid.NewGuid().ToString(), "VIIA4", Side.BUY, 5m, 10);
 
             // Assert
             Assert.False(string.IsNullOrWhiteSpace(message.ClOrdID.getValue()));
@@ -55,7 +57,7 @@ namespace TestOrderGenerator
         public void BuildNewOrderSingle_ShouldSetHandlingInstruction()
         {
             // Act
-            var message = _builder.BuildNewOrderSingle("PETR4", Side.BUY, 10m, 50);
+            var message = _builder.BuildNewOrderSingle(Guid.NewGuid().ToString(), "PETR4", Side.BUY, 10m, 50);
 
             // Assert
             Assert.Equal('1', message.HandlInst.getValue());
@@ -67,7 +69,7 @@ namespace TestOrderGenerator
             // Act
             var before = DateTime.UtcNow;
 
-            var message = _builder.BuildNewOrderSingle("PETR4", Side.BUY, 10m, 50);
+            var message = _builder.BuildNewOrderSingle(Guid.NewGuid().ToString(), "PETR4", Side.BUY, 10m, 50);
 
             var after = DateTime.UtcNow;
 

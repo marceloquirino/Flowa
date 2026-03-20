@@ -22,14 +22,14 @@ namespace TestOrderGenerator
             // Arrange
             var order = new OrderDto();
 
-            _service.NewOrderSingle(order).Returns(true);
+            _service.NewOrderSingle(order).Returns(1);
 
             // Act
             var result = await _controller.NewOrderSingle(order);
 
             // Assert
             Assert.True(result.IsSuccess);
-            _service.Received(1).NewOrderSingle(order);
+            await _service.Received(1).NewOrderSingle(order);
         }
 
         [Fact]

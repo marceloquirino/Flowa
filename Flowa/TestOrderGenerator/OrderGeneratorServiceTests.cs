@@ -1,9 +1,11 @@
 ﻿using NSubstitute;
 using OrderGenerator.Api.Fix.IFix;
 using OrderGenerator.Api.Models.Dtos;
-using OrderGenerator.Api.Models.Enums;
 using OrderGenerator.Api.Services;
+using QuickFix.Fields;
 using QuickFix.FIX44;
+using Side = OrderGenerator.Api.Models.Enums.Side;
+using Symbol = OrderGenerator.Api.Models.Enums.Symbol;
 
 namespace TestOrderGenerator
 {
@@ -22,7 +24,40 @@ namespace TestOrderGenerator
         }
 
         [Fact]
-        public void NewOrderSingle_ShouldBuildMessage_AndSendSuccessfully()
+        public async Task NewOrderSingle_DeveRetornarExposure_QuandoTag9001Existe()
+        {
+            // Arrange
+            string clOrdId = Guid.NewGuid().ToString();
+            var order = new OrderDto
+            {
+                Symbol = Symbol.PETR4,
+                Side = Side.Buy,
+                Price = 10,
+                Quantity = 2
+            };
+
+            var message = new NewOrderSingle();
+            var executionReport = new ExecutionReport();
+
+            executionReport.SetField(new DecimalField(9001, 123.45m));
+
+            _fixBuilder
+                .BuildNewOrderSingle(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<char>(), Arg.Any<decimal>(), Arg.Any<int>())
+                .Returns(message);
+
+            _fixClient
+                .SendAndAwait(Arg.Any<Message>(), Arg.Any<string>())
+                .Returns(executionReport);
+
+            // Act
+            var result = await _service.NewOrderSingle(order);
+
+            // Assert
+            Assert.Equal(123.45m, result);
+        }
+
+        [Fact]
+        public async Task NewOrderSingle_DeveRetornarZero_QuandoTag9001NaoExiste()
         {
             // Arrange
             var order = new OrderDto
@@ -30,34 +65,29 @@ namespace TestOrderGenerator
                 Symbol = Symbol.PETR4,
                 Side = Side.Buy,
                 Price = 10,
-                Quantity = 100
+                Quantity = 2
             };
 
-            var expectedMessage = new NewOrderSingle();
+            var message = new NewOrderSingle();
+            var executionReport = new ExecutionReport();
 
             _fixBuilder
-                .BuildNewOrderSingle("PETR4", (char)Side.Buy, 10, 100)
-                .Returns(expectedMessage);
+                .BuildNewOrderSingle(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<char>(), Arg.Any<decimal>(), Arg.Any<int>())
+                .Returns(message);
 
-            _fixClient.Send(expectedMessage).Returns(true);
+            _fixClient
+                .SendAndAwait(Arg.Any<Message>(), Arg.Any<string>())
+                .Returns(executionReport);
 
             // Act
-            var result = _service.NewOrderSingle(order);
+            var result = await _service.NewOrderSingle(order);
 
             // Assert
-            Assert.True(result);
-
-            _fixBuilder.Received(1).BuildNewOrderSingle(
-                "PETR4",
-                (char)Side.Buy,
-                10,
-                100);
-
-            _fixClient.Received(1).Send(expectedMessage);
+            Assert.Equal(0, result);
         }
 
         [Fact]
-        public void NewOrderSingle_ShouldReturnFalse_WhenSendFails()
+        public async Task NewOrderSingle_DeveChamarFixBuilderCorretamente()
         {
             // Arrange
             var order = new OrderDto
@@ -65,51 +95,62 @@ namespace TestOrderGenerator
                 Symbol = Symbol.VALE3,
                 Side = Side.Sell,
                 Price = 50,
-                Quantity = 200
+                Quantity = 10
             };
 
             var message = new NewOrderSingle();
+            var executionReport = new ExecutionReport();
 
             _fixBuilder
-                .BuildNewOrderSingle("VALE3", (char)Side.Sell, 50, 200)
+                .BuildNewOrderSingle(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<char>(), Arg.Any<decimal>(), Arg.Any<int>())
                 .Returns(message);
 
-            _fixClient.Send(message).Returns(false);
+            _fixClient
+                .SendAndAwait(Arg.Any<Message>(), Arg.Any<string>())
+                .Returns(executionReport);
 
             // Act
-            var result = _service.NewOrderSingle(order);
+            await _service.NewOrderSingle(order);
 
             // Assert
-            Assert.False(result);
+            _fixBuilder.Received(1).BuildNewOrderSingle(
+                Arg.Any<string>(),
+                order.Symbol.ToString(),
+                (char)order.Side,
+                order.Price,
+                order.Quantity
+            );
         }
 
         [Fact]
-        public void NewOrderSingle_ShouldCallDependencies_WithCorrectParameters()
+        public async Task NewOrderSingle_DeveChamarFixClientCorretamente()
         {
             // Arrange
             var order = new OrderDto
             {
-                Symbol = Symbol.VIIA4,
-                Side = Side.Buy,
-                Price = 5,
+                Symbol = Symbol.VALE3,
+                Side = Side.Sell,
+                Price = 50,
                 Quantity = 10
             };
 
-            _fixBuilder
-                .BuildNewOrderSingle(Arg.Any<string>(), Arg.Any<char>(), Arg.Any<decimal>(), Arg.Any<int>())
-                .Returns(new NewOrderSingle());
+            var message = new NewOrderSingle();
+            var executionReport = new ExecutionReport();
 
-            _fixClient.Send(Arg.Any<NewOrderSingle>()).Returns(true);
+            _fixBuilder
+                .BuildNewOrderSingle(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<char>(), Arg.Any<decimal>(), Arg.Any<int>())
+                .Returns(message);
+
+            _fixClient
+                .SendAndAwait(message, Arg.Any<string>())
+                .Returns(executionReport);
 
             // Act
-            _service.NewOrderSingle(order);
+            await _service.NewOrderSingle(order);
 
             // Assert
-            _fixBuilder.Received().BuildNewOrderSingle(
-                "VIIA4",
-                (char)Side.Buy,
-                5,
-                10);
+            await _fixClient.Received(1)
+                .SendAndAwait(message, Arg.Any<string>());
         }
     }
 }
