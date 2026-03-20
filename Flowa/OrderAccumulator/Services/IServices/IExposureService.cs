@@ -2,6 +2,6 @@
 {
     public interface IExposureService
     {
-        void UpdateExposure(string symbol, char side, decimal price, decimal quantity);
+        decimal UpdateExposure(string symbol, char side, decimal price, decimal quantity);
     }
 }

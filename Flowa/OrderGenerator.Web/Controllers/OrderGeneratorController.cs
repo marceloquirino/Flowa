@@ -21,7 +21,7 @@ namespace OrderGenerator.Web.Controllers
 
                 if (response?.IsSuccess == true)
                 {
-                    TempData["success"] = "Ordem enviada com sucesso";
+                    TempData["success"] = $"Ordem processada com sucesso. Exposição {model.Symbol}: {response.Result}";
                     model = new OrderDto();
                     return RedirectToAction(nameof(OrderGeneratorIndex));
                 }

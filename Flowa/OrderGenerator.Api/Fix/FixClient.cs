@@ -29,19 +29,31 @@ namespace OrderGenerator.Api.Fix
             );
         }
 
-        public bool Send(Message message)
+        public async Task<QuickFix.FIX44.ExecutionReport> SendAndAwait(Message message, string clOrdId)
         {
-            foreach (var sessionId in _initiator.GetSessionIDs())
+            var sessionId = _initiator.GetSessionIDs().FirstOrDefault();
+            if (sessionId == null || Session.LookupSession(sessionId)?.IsLoggedOn != true)
+                throw new Exception("Fix session not available.");
+
+            // Register and awaits in Application
+            var tcs = _application.ExpectResponse(clOrdId);
+
+            // Send the message
+            if (!Session.SendToTarget(message, sessionId))
             {
-                var session = Session.LookupSession(sessionId);
-
-                if (session?.IsLoggedOn != true)
-                    return false;
-
-                return Session.SendToTarget(message, sessionId);
+                throw new Exception("Failed to place message in the output queue.");
             }
 
-            return false;
+            // Await response with timeout
+            var timeoutTask = Task.Delay(TimeSpan.FromSeconds(10));
+            var completedTask = await Task.WhenAny(tcs.Task, timeoutTask);
+
+            if (completedTask == timeoutTask)
+            {
+                throw new TimeoutException($"Timeout for message {clOrdId}");
+            }
+
+            return await tcs.Task;
         }
 
         public void Start()

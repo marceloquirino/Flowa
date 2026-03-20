@@ -6,6 +6,6 @@ namespace OrderGenerator.Api.Fix.IFix
     {
         void Start();
         void Stop();
-        bool Send(Message message);
+        Task<QuickFix.FIX44.ExecutionReport> SendAndAwait(Message message, string clOrdId);
     }
 }

@@ -7,13 +7,14 @@ namespace OrderGenerator.Api.Fix
     public class FixMessageBuilder : IFixMessageBuilder
     {
         public NewOrderSingle BuildNewOrderSingle(
-        string symbol,
-        char side,
-        decimal price,
-        int quantity)
+            string clOrdId,
+            string symbol,
+            char side,
+            decimal price,
+            int quantity)
         {
             var order = new NewOrderSingle(
-                new ClOrdID(Guid.NewGuid().ToString()),
+                new ClOrdID(clOrdId),
                 new Symbol(symbol),
                 new Side(side),
                 new TransactTime(DateTime.UtcNow),

@@ -16,7 +16,8 @@ namespace OrderGenerator.Api.Controllers
         {
             try
             {
-                _response.IsSuccess = _orderGeneratorService.NewOrderSingle(order);
+                _response.Result = await _orderGeneratorService.NewOrderSingle(order);
+                _response.IsSuccess = true;
             }
             catch (Exception ex)
             {

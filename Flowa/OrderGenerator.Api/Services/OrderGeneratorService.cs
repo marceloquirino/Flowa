@@ -9,15 +9,26 @@ namespace OrderGenerator.Api.Services
         public readonly IFixClient _fixClient = fixClient;
         private readonly IFixMessageBuilder _fixBuilder = fixBuilder;
 
-        public bool NewOrderSingle(OrderDto order)
+        public async Task<decimal> NewOrderSingle(OrderDto order)
         {
-            var message = _fixBuilder.BuildNewOrderSingle(
-            order.Symbol.ToString(),
-            (char)order.Side,
-            order.Price,
-            order.Quantity);
+            string clOrdId = Guid.NewGuid().ToString();
 
-            return _fixClient.Send(message);
+            var message = _fixBuilder.BuildNewOrderSingle(
+                clOrdId,
+                order.Symbol.ToString(),
+                (char)order.Side,
+                order.Price,
+                order.Quantity);
+
+            var response = await _fixClient.SendAndAwait(message, clOrdId);
+
+            // Extracts Exposure from tag 9001
+            if (response.IsSetField(9001))
+            {
+                return response.GetDecimal(9001);
+            }
+
+            return 0;
         }
     }
 }
