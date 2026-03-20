@@ -24,7 +24,7 @@ namespace OrderGenerator.Api.Fix
             }
             else
             {
-                Console.WriteLine("Mensagem recebida não é um ExecutionReport conhecido.");
+                Console.WriteLine("The message received is not a known ExecutionReport.");
             }
         }
 
@@ -50,14 +50,15 @@ namespace OrderGenerator.Api.Fix
             string clOrdID = message.ClOrdID.getValue();
             char ordStatus = message.OrdStatus.getValue();
             decimal lastQty = message.LastQty.getValue();
+            string symbol = message.Symbol.getValue();
 
-            Console.WriteLine($"ExecReport recebido! Ordem: {clOrdID}, Status: {ordStatus}, Qtd: {lastQty}");
+            Console.WriteLine($"ExecReport received! Order: {clOrdID}, Status: {ordStatus}, Qtd: {lastQty}");
 
             // 2. Lendo seu campo customizado (Exposure - Tag 9001)
             if (message.IsSetField(9001))
             {
                 decimal exposure = message.GetDecimal(9001);
-                Console.WriteLine($"Exposure atualizada via FIX: {exposure}");
+                Console.WriteLine($"Exposure updated - FIX: {symbol}: {exposure}");
             }
 
             // Se alguém estiver esperando por este ID, completa a Task
