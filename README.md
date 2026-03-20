@@ -10,7 +10,7 @@ A solução é composta por quatro partes principais:
 - OrderAccumulator (Work Service): Serviço responsável por receber mensagens FIX, processar ordens, calcular a exposição e retorná-la.
 - Integração com FIX Engine: A comunicação entre os componentes é feita utilizando o QuickFIX/n, seguindo a especificação FIX 4.4.
 
-A solução apresenta testes unitários para o projeto OrderGenerator API
+A solução apresenta testes unitários para o projeto OrderGenerator API (TestOrderGenerator) e para o projeto OrderAccumulator (TestOrderAccumulator)
 
 ## Como funciona
 - O usuário envia uma ordem pela interface web.
