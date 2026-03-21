@@ -148,6 +148,7 @@ Em um cenário real, seria recomendado:
 - 🔧 Tornar os símbolos configuráveis (em vez de `enum`)
 - 🔄 Implementar resiliência e retry entre serviços
 - 🔐 Implementar autenticação e autorização, garantindo que as ordens e exposições sejam separadas por usuário
+- 🌐 Adicionar um API Gateway para centralizar o acesso aos serviços, gerenciar rotas e melhorar a segurança
 
 ---
 
