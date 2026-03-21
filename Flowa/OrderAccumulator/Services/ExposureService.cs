@@ -1,29 +1,33 @@
 ﻿using OrderAccumulator.Services.IServices;
+using QuickFix.Fields;
+using System.Collections.Concurrent;
 
 namespace OrderAccumulator.Services
 {
     public class ExposureService(ILogger<ExposureService> logger) : IExposureService
     {
         private readonly ILogger<ExposureService> _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-        private readonly Dictionary<string, decimal> _exposures = [];
+        private readonly ConcurrentDictionary<string, decimal> _exposures = [];
 
-        public decimal UpdateExposure(string symbol, char side, decimal price, decimal quantity)
+        public decimal GetExposure(string symbol)
+        {
+            return _exposures.TryGetValue(symbol, out var value) ? value : 0;
+        }
+
+        public void UpdateExposure(string symbol, char side, decimal price, decimal quantity)
         {
             var value = price * quantity;
 
-            if (!_exposures.ContainsKey(symbol))
-                _exposures[symbol] = 0;
-            if (side == QuickFix.Fields.Side.BUY)
-                _exposures[symbol] += value;
-            else
-                _exposures[symbol] -= value;
+            _exposures.AddOrUpdate(
+                symbol,
+                side == Side.BUY ? value : -value,
+                (_, current) => current + (side == Side.BUY ? value : -value)
+            );
 
             if (_logger.IsEnabled(LogLevel.Information))
             {
                 _logger.LogInformation("Exposure {Symbol}: {Exposure}", symbol, _exposures[symbol]);
             }
-
-            return _exposures[symbol];
         }
     }
 }

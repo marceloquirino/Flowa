@@ -8,6 +8,7 @@
     <Project Path="OrderGenerator.Api/OrderGenerator.Api.csproj" />
   </Folder>
   <Folder Name="/Tests/">
+    <Project Path="TestOrderAccumulator/TestOrderAccumulator.csproj" Id="27f99403-4b11-412c-b083-a83c715d53e5" />
     <Project Path="TestOrderGenerator/TestOrderGenerator.csproj" Id="394b5616-e5a9-4403-9305-3325bc154fbe" />
   </Folder>
 </Solution>

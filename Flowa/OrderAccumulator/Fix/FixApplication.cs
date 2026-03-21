@@ -44,14 +44,14 @@ namespace OrderAccumulator.Fix
             var price = order.Price.getValue();
             var side = order.Side.getValue();
 
-            var exposure = _exposureService.UpdateExposure(symbol, side, price, qty);
+            _exposureService.UpdateExposure(symbol, side, price, qty);
 
-            SendExecutionReport(order, sessionID, exposure);
+            SendExecutionReport(order, sessionID, _exposureService.GetExposure(symbol));
         }
 
         private static void SendExecutionReport(NewOrderSingle order, SessionID sessionID, decimal exposure)
         {
-            var execReport = new QuickFix.FIX44.ExecutionReport(
+            var execReport = new ExecutionReport(
                 new OrderID(Guid.NewGuid().ToString()),          // 37
                 new ExecID(Guid.NewGuid().ToString()),           // 17
                 new ExecType(ExecType.FILL),                     // 150
