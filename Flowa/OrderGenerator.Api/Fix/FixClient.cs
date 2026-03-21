@@ -7,23 +7,20 @@ namespace OrderGenerator.Api.Fix
     public class FixClient : IFixClient
     {
         private readonly SocketInitiator _initiator;
-        private readonly SessionSettings _settings;
         private readonly FixApplication _application;
 
-        public FixClient()
+        public FixClient(SessionSettings settings)
         {
-            _settings = new SessionSettings("fix.cfg");
-
             _application = new FixApplication();
 
-            IMessageStoreFactory storeFactory = new FileStoreFactory(_settings);
-            ILogFactory logFactory = new FileLogFactory(_settings);
+            IMessageStoreFactory storeFactory = new FileStoreFactory(settings);
+            ILogFactory logFactory = new FileLogFactory(settings);
             IMessageFactory messageFactory = new DefaultMessageFactory();
 
             _initiator = new SocketInitiator(
                 _application,
                 storeFactory,
-                _settings,
+                settings,
                 logFactory,
                 messageFactory
             );

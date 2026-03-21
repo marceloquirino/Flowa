@@ -7,10 +7,8 @@ namespace OrderAccumulator.Fix
     {
         private readonly ThreadedSocketAcceptor _acceptor;
 
-        public FixServer(FixApplication application)
+        public FixServer(FixApplication application, SessionSettings settings)
         {
-            var settings = new SessionSettings("fix.cfg");
-
             IMessageStoreFactory storeFactory = new FileStoreFactory(settings);
             ILogFactory logFactory = new FileLogFactory(settings);
             IMessageFactory messageFactory = new DefaultMessageFactory();

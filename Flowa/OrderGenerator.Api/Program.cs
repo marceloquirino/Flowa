@@ -2,6 +2,7 @@ using OrderGenerator.Api.Fix;
 using OrderGenerator.Api.Fix.IFix;
 using OrderGenerator.Api.Services;
 using OrderGenerator.Api.Services.IService;
+using QuickFix;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,6 +14,14 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<IOrderGeneratorService, OrderGeneratorService>();
 builder.Services.AddSingleton<IFixClient, FixClient>();
 builder.Services.AddSingleton<IFixMessageBuilder, FixMessageBuilder>();
+
+builder.Services.AddSingleton(provider =>
+{
+    var config = provider.GetRequiredService<IConfiguration>();
+    var path = config["Fix:ConfigPath"];
+
+    return new SessionSettings(path);
+});
 
 builder.Services
     .AddControllers()

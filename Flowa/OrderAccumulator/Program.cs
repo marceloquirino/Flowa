@@ -3,6 +3,7 @@ using OrderAccumulator.Fix;
 using OrderAccumulator.Fix.IFix;
 using OrderAccumulator.Services;
 using OrderAccumulator.Services.IServices;
+using QuickFix;
 using Serilog;
 
 var builder = Host.CreateApplicationBuilder(args);
@@ -13,7 +14,15 @@ builder.Services.AddSingleton<IFixServer, FixServer>();
 
 builder.Services.AddHostedService<Worker>();
 
-Log.Logger = new LoggerConfiguration()
+builder.Services.AddSingleton(provider =>
+{
+    var config = provider.GetRequiredService<IConfiguration>();
+    var path = config["Fix:ConfigPath"];
+
+    return new SessionSettings(path);
+});
+
+Serilog.Log.Logger = new LoggerConfiguration()
     .WriteTo.Console()
     .WriteTo.File("logs/log.txt", rollingInterval: RollingInterval.Day)
     .CreateLogger();
